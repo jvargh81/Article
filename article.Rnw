@@ -1,0 +1,70 @@
+\documentclass{article}
+
+\begin{document}
+
+\title {Sense and Sensibility Wordcloud}
+\author {Jerrin Varghese}
+\maketitle
+
+\begin{abstract}
+In this article we construct a wordcloud,using the tidytext R package.
+
+\end{abstract}
+
+\textit{Sense and sensibility} is a novel by Jane austen published in 1811.
+
+\section (The JAne Austin Package)
+There is a relatively new package for R,Janeaustenr , that gives one access to all of the novels written by Jane.
+
+<<warning=FALSE,message=FALSE>>=
+library(janeaustenr)
+library(dplyr)
+sns<-austen_books()
+@
+
+This datafame has to columns, one for each line in Austen's novels, and one indicating which book the line is from. Let's frst filter using dplyr, so that we have only the lines for sense and sensibility.
+
+<<>>=
+sns<-sns%>%
+  filter(book == "Sense & Sensibility")
+head(sns)
+@
+
+Now we are ready for some data cleaning.
+\noindent Now we are ready for some data cleaning.
+\section {Some Data Cleaning}
+
+We would like to remove all of the `Chapter' lines. # ` for '' and  `` for ""
+
+<<>>=
+library(stringr)
+sns<-sns%>%
+  filter(!str_detect(sns$text,'^CHAPTER'))
+print(sns, n=50)
+
+@
+
+Next we would like to rmove the front matter. By inspection, we have determined that the front matter ends on line 11. Therefore we can redefine sns to begin on line 12
+
+<<>>=
+sns<-sns[12:12562,]
+@
+
+\section{The wordcloud}
+To make the word cloud, we first need to break up the lines into words. We can use the function from package tidytext for this.
+
+<<>>=
+words_df<-sns%>%
+  unnest_tokens(word,text)
+words_df
+@
+
+We can remove common, unimportant words with the stop\_words from the data frame with dplyr.
+<<>>=
+words_df<-words_df%>%
+  filter(!(word %in% stop_words$word))
+words_df
+@
+
+
+\end{document}

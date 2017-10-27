@@ -1,4 +1,5 @@
-# libraries used dplyr, janeaustenr and stringr
+# libraries used dplyr, janeaustenr, tidytext, tm, gutenbergr, knitr and stringr
+# install latex : https://miktex.org/download
 sns<-austen_books()
 
 sns<-sns%>%
